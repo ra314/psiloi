@@ -8,9 +8,20 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Reference",
+"class": "Directions",
+"language": "GDScript",
+"path": "res://Scripts/Directions.gd"
+} ]
+_global_script_class_icons={
+"Directions": ""
+}
+
 [application]
 
 config/name="Project Psiloi"
+run/main_scene="res://Scenes/Main.tscn"
 config/icon="res://icon.png"
 
 [importer_defaults]
