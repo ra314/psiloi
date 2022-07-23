@@ -1,6 +1,7 @@
 class_name LevelGenerator
 
 const LEVEL_SIZE = Vector2(20,20)
+const HIGHEST_INT_TILE_VALUE := 1
 
 static func init_noise() -> OpenSimplexNoise:
 	var noise = OpenSimplexNoise.new()
@@ -30,10 +31,10 @@ static func normalize_level(level: Array) -> Array:
 		for j in range(len(normalized_level[0])):
 			normalized_level[i][j] -= lowest
 			normalized_level[i][j] /= abs(highest-lowest)
+			normalized_level[i][j] *= HIGHEST_INT_TILE_VALUE
 	return normalized_level
 
 static func cast_and_round_level_to_ints(level: Array) -> Array:
-	print(level)
 	var integerized_level = level.duplicate(true)
 	for i in range(len(integerized_level)):
 		for j in range(len(integerized_level[0])):
