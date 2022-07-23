@@ -10,12 +10,18 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Reference",
-"class": "Directions",
+"class": "LevelGenerator",
 "language": "GDScript",
-"path": "res://Scripts/Directions.gd"
+"path": "res://Scripts/LevelGenerator.gd"
+}, {
+"base": "Reference",
+"class": "Navigator",
+"language": "GDScript",
+"path": "res://Scripts/Navigator.gd"
 } ]
 _global_script_class_icons={
-"Directions": ""
+"LevelGenerator": "",
+"Navigator": ""
 }
 
 [application]
