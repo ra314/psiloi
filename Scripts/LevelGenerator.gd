@@ -5,6 +5,7 @@ const HIGHEST_INT_TILE_VALUE := 1
 
 static func init_noise() -> OpenSimplexNoise:
 	var noise = OpenSimplexNoise.new()
+	randomize()
 	noise.seed = randi()
 	noise.octaves = 4
 	noise.period = 2

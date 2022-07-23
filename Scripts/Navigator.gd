@@ -40,24 +40,21 @@ static func get_surrounding_tiles(grid_pos: Vector2) -> Array:
 	return grid_positions
 
 static func backtrace_path(node_to_prev_node_map: Dictionary, node: Vector2, start_grid_pos: Vector2) -> Array:
-	print(start_grid_pos)
-	print(node)
-	
 	var path = []
 	while node != start_grid_pos:
 		path.append(node)
-		
 		node = node_to_prev_node_map[node]
 	path.append(node)
-	print(path)
+	path.invert()
 	return path
 
 static func bfs_path(start_grid_pos: Vector2, end_grid_pos: Vector2, tilemap: TileMap) -> Array:
+	if tilemap.get_cellv(start_grid_pos) in BLOCKING_TILES:
+		return []
+	
 	var bfs_queue = []
 	var node_to_prev_node_map = {}
 	bfs_queue.append(start_grid_pos)
-	
-	print(start_grid_pos)
 	
 	# Find path with BFS
 	var node: Vector2
@@ -66,7 +63,7 @@ static func bfs_path(start_grid_pos: Vector2, end_grid_pos: Vector2, tilemap: Ti
 		if node == end_grid_pos:
 			return backtrace_path(node_to_prev_node_map, node, start_grid_pos)
 		for surrounding_node in get_surrounding_tiles(node):
-			if !(tilemap.get_cellv(node) in BLOCKING_TILES):
+			if !(tilemap.get_cellv(surrounding_node) in BLOCKING_TILES):
 				if !(surrounding_node in node_to_prev_node_map):
 					node_to_prev_node_map[surrounding_node] = node
 					bfs_queue.append(surrounding_node)
