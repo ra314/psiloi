@@ -69,12 +69,34 @@ static func cache_unit_locations(units: Array, tilemap: TileMap) -> void:
 ### ATTACKING
 var is_attack_highlight_on := false
 const WIZARD_BLAST_RANGE := 6
+const ARCHER_ATTACK_RANGE := 5
 var possible_attack_tiles: Array 
 
 # Returns false if higlighting is being performed
 # Return true if highlighting is over or was not necessary
 func stationary_attack(grid_pos: Vector2 = Vector2(0,0)) -> bool:
-	return wizard_blast(grid_pos)
+	return archer_attack(grid_pos)
+
+func archer_attack_highlight():
+	possible_attack_tiles = \
+		NAVIGATOR.get_radial_grid_positions_with_range(grid_pos, ARCHER_ATTACK_RANGE)
+	tilemap.highlight_tiles(possible_attack_tiles)
+	is_attack_highlight_on = true
+
+func archer_attack(target_grid_pos: Vector2) -> bool:
+	if !is_attack_highlight_on:
+		archer_attack_highlight()
+		return false
+	tilemap.unhighlight_prev_tiles()
+	is_attack_highlight_on = false
+	# No attack can be performed because the selected position, was not one of the
+	# previously highlighted and valid positions for an attack
+	if !(target_grid_pos in possible_attack_tiles):
+		return true
+	possible_attack_tiles = []
+	if target_grid_pos in CACHE.pos_to_unit_map:
+		CACHE.pos_to_unit_map[target_grid_pos].die()
+	return true
 
 func wizard_blast_highlight():
 	possible_attack_tiles = \
