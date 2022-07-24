@@ -8,9 +8,11 @@ const MOVEMENT_PERIOD := 0.2
 var timer: Timer
 
 
-func init(tilemap: TileMap) -> Unit:
+func init(tilemap: TileMap, grid_pos: Vector2) -> Unit:
 	self.tilemap = tilemap
-	self.grid_pos = tilemap.world_to_map(position)
+	self.grid_pos = grid_pos
+	position = tilemap.map_to_world(grid_pos)
+	AUTO.pos_to_unit_map[grid_pos] = self
 	
 	timer = Timer.new()
 	timer.wait_time = MOVEMENT_PERIOD
@@ -38,18 +40,18 @@ func start_movement():
 
 func check_and_perform_stab_attack(prev_grid_pos: Vector2) -> void:
 	var target_grid_pos = NAVIGATOR.get_next_grid_pos_in_same_dir(prev_grid_pos, grid_pos)
-	if !(target_grid_pos in CACHE.pos_to_unit_map):
+	if !(target_grid_pos in AUTO.pos_to_unit_map):
 		return
-	var enemy: Unit = CACHE.pos_to_unit_map[target_grid_pos]
+	var enemy: Unit = AUTO.pos_to_unit_map[target_grid_pos]
 	enemy.die()
 
 func move_along_path() -> void:
 	var node: Vector2 = curr_path.pop_front()
 	position = tilemap.map_to_world(node)
-	CACHE.pos_to_unit_map.erase(grid_pos)
+	AUTO.pos_to_unit_map.erase(grid_pos)
 	var prev_pos = grid_pos
 	grid_pos = node
-	CACHE.pos_to_unit_map[grid_pos] = self
+	AUTO.pos_to_unit_map[grid_pos] = self
 	
 	if curr_path == []:
 		check_and_perform_stab_attack(prev_pos)
@@ -58,24 +60,46 @@ func move_along_path() -> void:
 
 func die():
 	visible = false
-	CACHE.pos_to_unit_map.erase(grid_pos)
-
-static func cache_unit_locations(units: Array, tilemap: TileMap) -> void:
-	for unit in units:
-		var grid_pos = tilemap.world_to_map(unit.position)
-		CACHE.pos_to_unit_map[grid_pos] = unit
-
+	AUTO.pos_to_unit_map.erase(grid_pos)
 
 ### ATTACKING
 var is_attack_highlight_on := false
 const WIZARD_BLAST_RANGE := 6
 const ARCHER_ATTACK_RANGE := 5
+const BOMBER_THROW_RANGE := 2
 var possible_attack_tiles: Array 
 
 # Returns false if higlighting is being performed
 # Return true if highlighting is over or was not necessary
 func stationary_attack(grid_pos: Vector2 = Vector2(0,0)) -> bool:
-	return archer_attack(grid_pos)
+	return bomber_attack(grid_pos)
+
+func bomber_throw_highlight():
+	possible_attack_tiles = \
+		NAVIGATOR.get_grid_positions_within_distance(grid_pos, BOMBER_THROW_RANGE)
+	tilemap.highlight_tiles(possible_attack_tiles)
+	is_attack_highlight_on = true
+
+func bomber_attack(target_grid_pos: Vector2) -> bool:
+	if !is_attack_highlight_on:
+		bomber_throw_highlight()
+		return false
+	tilemap.unhighlight_prev_tiles()
+	is_attack_highlight_on = false
+	# No attack can be performed because the selected position, was not one of the
+	# previously highlighted and valid positions for an attack
+	if !(target_grid_pos in possible_attack_tiles):
+		return true
+	possible_attack_tiles = []
+	if !(target_grid_pos in AUTO.pos_to_unit_map):
+		if !(tilemap.get_cellv(target_grid_pos) in AUTO.BLOCKING_TILES):
+			add_bomb(target_grid_pos)
+	return true
+
+var BOMB = load("res://Scenes/Bomb.tscn")
+func add_bomb(target_grid_pos: Vector2):
+	var new_bomb = BOMB.instance().init(tilemap, target_grid_pos)
+	get_parent().add_child(new_bomb)
 
 func archer_attack_highlight():
 	possible_attack_tiles = \
@@ -94,8 +118,8 @@ func archer_attack(target_grid_pos: Vector2) -> bool:
 	if !(target_grid_pos in possible_attack_tiles):
 		return true
 	possible_attack_tiles = []
-	if target_grid_pos in CACHE.pos_to_unit_map:
-		CACHE.pos_to_unit_map[target_grid_pos].die()
+	if target_grid_pos in AUTO.pos_to_unit_map:
+		AUTO.pos_to_unit_map[target_grid_pos].die()
 	return true
 
 func wizard_blast_highlight():
@@ -124,6 +148,6 @@ func wizard_blast(target_grid_pos: Vector2) -> bool:
 		return true
 	for attacked_grid_pos in \
 		NAVIGATOR.get_grid_positions_along_line(grid_pos, WIZARD_BLAST_RANGE, attack_direction):
-		if attacked_grid_pos in CACHE.pos_to_unit_map:
-			CACHE.pos_to_unit_map[attacked_grid_pos].die()
+		if attacked_grid_pos in AUTO.pos_to_unit_map:
+			AUTO.pos_to_unit_map[attacked_grid_pos].die()
 	return true

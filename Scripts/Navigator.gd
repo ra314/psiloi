@@ -2,7 +2,6 @@
 extends Node
 
 const DIR_ALL = ["N", "S", "SE", "NW", "SW", "NE"]
-const BLOCKING_TILES = {0:true, -1:true}
 
 func N(grid_pos: Vector2) -> Vector2:
 	return grid_pos + Vector2(0,-1)
@@ -104,7 +103,7 @@ func backtrace_path(node_to_prev_node_map: Dictionary, node: Vector2, start_grid
 	return path
 
 func bfs_path(start_grid_pos: Vector2, end_grid_pos: Vector2, tilemap: TileMap) -> Array:
-	if tilemap.get_cellv(start_grid_pos) in BLOCKING_TILES:
+	if tilemap.get_cellv(start_grid_pos) in AUTO.BLOCKING_TILES:
 		return []
 	
 	var bfs_queue = []
@@ -118,8 +117,9 @@ func bfs_path(start_grid_pos: Vector2, end_grid_pos: Vector2, tilemap: TileMap) 
 		if node == end_grid_pos:
 			return backtrace_path(node_to_prev_node_map, node, start_grid_pos)
 		for surrounding_node in get_surrounding_tiles(node):
-			if !(tilemap.get_cellv(surrounding_node) in BLOCKING_TILES):
-				if !(surrounding_node in node_to_prev_node_map):
-					node_to_prev_node_map[surrounding_node] = node
-					bfs_queue.append(surrounding_node)
+			if !(surrounding_node in node_to_prev_node_map):
+				if !(tilemap.get_cellv(surrounding_node) in AUTO.BLOCKING_TILES):
+					if !(surrounding_node in AUTO.pos_to_unit_map):
+						node_to_prev_node_map[surrounding_node] = node
+						bfs_queue.append(surrounding_node)
 	return []

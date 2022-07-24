@@ -8,12 +8,8 @@ const EXIT_POS := Vector2(19,1)
 func _ready():
 	create_valid_procedural_level()
 	
-	$Units/Player.position = $TileMap.map_to_world(HERO_SPAWN_POS)
-	$Units/Enemy.position = $TileMap.map_to_world(ENEMY_SPAWN_POS)
-	
-	for child in $Units.get_children():
-		child.init($TileMap)
-	Unit.cache_unit_locations($Units.get_children(), $TileMap)
+	$Units/Player.init($TileMap, HERO_SPAWN_POS)
+	$Units/Enemy.init($TileMap, ENEMY_SPAWN_POS)
 
 func create_valid_procedural_level() -> void:
 	var num_tries = 0
@@ -31,7 +27,7 @@ var is_selecting_attack := false
 func _input(event):
 	if event is InputEventMouseButton and event.is_action_released("click"):
 		var grid_pos = $TileMap.world_to_map(event.position)
-		var curr_selected_unit = CACHE.pos_to_unit_map.get(grid_pos, null)
+		var curr_selected_unit = AUTO.pos_to_unit_map.get(grid_pos, null)
 		
 		if is_selecting_attack:
 			prev_selected_unit.stationary_attack(grid_pos)
