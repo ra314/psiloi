@@ -30,6 +30,52 @@ func NE(grid_pos: Vector2) -> Vector2:
 		return grid_pos + Vector2(1,-1)
 	return grid_pos + Vector2(1,0)
 
+# Returns "" if there is no straight line between the two positions
+# Also returns "" if start and end are the same
+const MAX_LINEAR_SEARCH_DISTANCE := 100
+func get_direction_between_positions(start_grid_pos: Vector2, end_grid_pos: Vector2) -> String:
+	if start_grid_pos == end_grid_pos:
+		return ""
+	var dir_to_last_pos_map = {}
+	for dir in DIR_ALL:
+		dir_to_last_pos_map[dir] = start_grid_pos
+	for i in range(MAX_LINEAR_SEARCH_DISTANCE):
+		for dir in DIR_ALL:
+			dir_to_last_pos_map[dir] = call(dir, dir_to_last_pos_map[dir])
+			if dir_to_last_pos_map[dir] == end_grid_pos:
+				return dir
+	return ""
+
+# Does not include the starting grid position
+func get_grid_positions_along_line(start_grid_pos: Vector2, distance: int, direction: String) -> Array:
+	assert(direction in DIR_ALL)
+	var grid_positions = []
+	var curr_pos = start_grid_pos
+	for i in range(distance):
+		curr_pos = call(direction, curr_pos)
+		grid_positions.append(curr_pos)
+	return grid_positions
+
+func get_grid_positions_within_distance(grid_pos: Vector2, distance: int) -> Array:
+	var positions = {}
+	positions[grid_pos] = true
+	
+	# This is a bit slow, but should be good enough
+	for i in range(distance):
+		for pos in positions.keys():
+			for adjacent_pos in get_surrounding_tiles(pos):
+				positions[adjacent_pos] = true
+	return positions.keys()
+
+func get_radial_grid_positions_with_range(grid_pos: Vector2, radius: int) -> Array:
+	var grid_positions = []
+	for dir in DIR_ALL:
+		var curr_pos = grid_pos
+		for i in range(radius):
+			curr_pos = call(dir, curr_pos)
+			grid_positions.append(curr_pos)
+	return grid_positions
+
 func get_next_grid_pos_in_same_dir(prev_grid_pos: Vector2, curr_grid_pos: Vector2) -> Vector2:
 	var tiles_to_dir_map = get_surrounding_tiles_to_dir_map(prev_grid_pos)
 	var last_movement_dir = tiles_to_dir_map[curr_grid_pos]

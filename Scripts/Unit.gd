@@ -58,10 +58,50 @@ func move_along_path() -> void:
 
 func die():
 	visible = false
-	CACHE.pos_to_unit_map[grid_pos] = null
+	CACHE.pos_to_unit_map.erase(grid_pos)
 
 static func cache_unit_locations(units: Array, tilemap: TileMap) -> void:
 	for unit in units:
 		var grid_pos = tilemap.world_to_map(unit.position)
 		CACHE.pos_to_unit_map[grid_pos] = unit
 
+
+### ATTACKING
+var is_attack_highlight_on := false
+const WIZARD_BLAST_RANGE := 6
+var possible_attack_tiles: Array 
+
+# Returns false if higlighting is being performed
+# Return true if highlighting is over or was not necessary
+func stationary_attack(grid_pos: Vector2 = Vector2(0,0)) -> bool:
+	return wizard_blast(grid_pos)
+
+func wizard_blast_highlight():
+	possible_attack_tiles = \
+		NAVIGATOR.get_radial_grid_positions_with_range(grid_pos, WIZARD_BLAST_RANGE)
+	tilemap.highlight_tiles(possible_attack_tiles)
+	is_attack_highlight_on = true
+
+func wizard_blast(target_grid_pos: Vector2) -> bool:
+	if !is_attack_highlight_on:
+		wizard_blast_highlight()
+		return false
+	tilemap.unhighlight_prev_tiles()
+	is_attack_highlight_on = false
+	# No attack can be performed because the selected position, was not one of the
+	# previously highlighted and valid positions for an attack
+	if !(target_grid_pos in possible_attack_tiles):
+		return true
+	possible_attack_tiles = []
+	var attack_direction = NAVIGATOR.get_direction_between_positions(grid_pos, target_grid_pos)
+	# No attack can be performed because the selected point is not in a straight line.
+	# Should not be possible since a previous check checks if the selected position
+	# is part of the previously highlighted positions
+	if attack_direction == "":
+		assert(false)
+		return true
+	for attacked_grid_pos in \
+		NAVIGATOR.get_grid_positions_along_line(grid_pos, WIZARD_BLAST_RANGE, attack_direction):
+		if attacked_grid_pos in CACHE.pos_to_unit_map:
+			CACHE.pos_to_unit_map[attacked_grid_pos].die()
+	return true
