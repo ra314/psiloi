@@ -26,25 +26,39 @@ func move_with_bfs_to(end_grid_pos: Vector2) -> bool:
 	if curr_path != []:
 		return false
 		
-	var path = Navigator.bfs_path(grid_pos, end_grid_pos, tilemap)
+	var path = NAVIGATOR.bfs_path(grid_pos, end_grid_pos, tilemap)
+	if path == []:
+		return false
 	curr_path = path
 	start_movement()
-	
-	return curr_path != []
+	return true
 
 func start_movement():
 	timer.start()
 
-func move_along_path() -> void:
-	if curr_path == []:
-		timer.stop()
+func check_and_perform_stab_attack(prev_grid_pos: Vector2) -> void:
+	var target_grid_pos = NAVIGATOR.get_next_grid_pos_in_same_dir(prev_grid_pos, grid_pos)
+	if !(target_grid_pos in CACHE.pos_to_unit_map):
 		return
-	
+	var enemy: Unit = CACHE.pos_to_unit_map[target_grid_pos]
+	enemy.die()
+
+func move_along_path() -> void:
 	var node: Vector2 = curr_path.pop_front()
 	position = tilemap.map_to_world(node)
 	CACHE.pos_to_unit_map.erase(grid_pos)
+	var prev_pos = grid_pos
 	grid_pos = node
 	CACHE.pos_to_unit_map[grid_pos] = self
+	
+	if curr_path == []:
+		check_and_perform_stab_attack(prev_pos)
+		timer.stop()
+		return
+
+func die():
+	visible = false
+	CACHE.pos_to_unit_map[grid_pos] = null
 
 static func cache_unit_locations(units: Array, tilemap: TileMap) -> void:
 	for unit in units:

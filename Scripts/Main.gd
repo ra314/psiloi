@@ -16,10 +16,10 @@ func _ready():
 func create_valid_procedural_level() -> void:
 	var num_tries = 0
 	LevelGenerator.apply_random_level_to_tilemap($TileMap)
-	var path = Navigator.bfs_path(HERO_SPAWN_POS, EXIT_POS, $TileMap)
+	var path = NAVIGATOR.bfs_path(HERO_SPAWN_POS, EXIT_POS, $TileMap)
 	while(path == []):
 		LevelGenerator.apply_random_level_to_tilemap($TileMap)
-		path = Navigator.bfs_path(HERO_SPAWN_POS, EXIT_POS, $TileMap)
+		path = NAVIGATOR.bfs_path(HERO_SPAWN_POS, EXIT_POS, $TileMap)
 		num_tries += 1
 	print("num_tries " + str(num_tries))
 	$TileMap.highlight_path(path)

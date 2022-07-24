@@ -1,45 +1,54 @@
-class_name Navigator
+### NAVIGATOR
+extends Node
 
 const DIR_ALL = ["N", "S", "SE", "NW", "SW", "NE"]
 const BLOCKING_TILES = {0:true, -1:true}
 
-static func N(grid_pos: Vector2) -> Vector2:
+func N(grid_pos: Vector2) -> Vector2:
 	return grid_pos + Vector2(0,-1)
 
-static func S(grid_pos: Vector2) -> Vector2:
+func S(grid_pos: Vector2) -> Vector2:
 	return grid_pos + Vector2(0,1)
 
-static func SE(grid_pos: Vector2) -> Vector2:
+func SE(grid_pos: Vector2) -> Vector2:
 	if int(grid_pos.x)%2 == 0:
 		return grid_pos + Vector2(1,0)
 	return grid_pos + Vector2(1,1)
 
-static func NW(grid_pos: Vector2) -> Vector2:
+func NW(grid_pos: Vector2) -> Vector2:
 	if int(grid_pos.x)%2 == 0:
 		return grid_pos + Vector2(-1,-1)
 	return grid_pos + Vector2(-1,0)
 
-static func SW(grid_pos: Vector2) -> Vector2:
+func SW(grid_pos: Vector2) -> Vector2:
 	if int(grid_pos.x)%2 == 0:
 		return grid_pos + Vector2(-1,0)
 	return grid_pos + Vector2(-1,1)
 
-static func NE(grid_pos: Vector2) -> Vector2:
+func NE(grid_pos: Vector2) -> Vector2:
 	if int(grid_pos.x)%2 == 0:
 		return grid_pos + Vector2(1,-1)
 	return grid_pos + Vector2(1,0)
 
-static func get_surrounding_tiles(grid_pos: Vector2) -> Array:
-	var grid_positions = []
-	grid_positions.append(N(grid_pos))
-	grid_positions.append(S(grid_pos))
-	grid_positions.append(NE(grid_pos))
-	grid_positions.append(NW(grid_pos))
-	grid_positions.append(SE(grid_pos))
-	grid_positions.append(SW(grid_pos))
+func get_next_grid_pos_in_same_dir(prev_grid_pos: Vector2, curr_grid_pos: Vector2) -> Vector2:
+	var tiles_to_dir_map = get_surrounding_tiles_to_dir_map(prev_grid_pos)
+	var last_movement_dir = tiles_to_dir_map[curr_grid_pos]
+	var next_pos_in_same_dir = call(last_movement_dir, curr_grid_pos)
+	return next_pos_in_same_dir
+
+func get_surrounding_tiles_to_dir_map(grid_pos: Vector2) -> Dictionary:
+	var grid_positions = {}
+	for dir in DIR_ALL:
+		grid_positions[call(dir, grid_pos)] = dir
 	return grid_positions
 
-static func backtrace_path(node_to_prev_node_map: Dictionary, node: Vector2, start_grid_pos: Vector2) -> Array:
+func get_surrounding_tiles(grid_pos: Vector2) -> Array:
+	var grid_positions = []
+	for dir in DIR_ALL:
+		grid_positions.append(call(dir, grid_pos))
+	return grid_positions
+
+func backtrace_path(node_to_prev_node_map: Dictionary, node: Vector2, start_grid_pos: Vector2) -> Array:
 	var path = []
 	while node != start_grid_pos:
 		path.append(node)
@@ -48,7 +57,7 @@ static func backtrace_path(node_to_prev_node_map: Dictionary, node: Vector2, sta
 	path.invert()
 	return path
 
-static func bfs_path(start_grid_pos: Vector2, end_grid_pos: Vector2, tilemap: TileMap) -> Array:
+func bfs_path(start_grid_pos: Vector2, end_grid_pos: Vector2, tilemap: TileMap) -> Array:
 	if tilemap.get_cellv(start_grid_pos) in BLOCKING_TILES:
 		return []
 	
