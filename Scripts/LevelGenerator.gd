@@ -49,7 +49,7 @@ static func generate_level() -> Array:
 	var normalized_level = normalize_level(two_d_noise_array)
 	return cast_and_round_level_to_ints(normalized_level)
 
-static func apply_random_level(tilemap: TileMap) -> void:
+static func apply_random_level_to_tilemap(tilemap: TileMap) -> void:
 	var procedural_level = generate_level()
 	for i in range(len(procedural_level)):
 		for j in range(len(procedural_level[0])):
