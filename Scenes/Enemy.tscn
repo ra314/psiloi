@@ -1,10 +1,10 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://Assets/Enemy_Tile.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Unit_Enemy_Minion.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Unit.gd" type="Script" id=2]
 
 [node name="Enemy" type="Sprite"]
-scale = Vector2( 0.25, 0.25 )
+scale = Vector2( 0.063, 0.063 )
 texture = ExtResource( 1 )
 centered = false
 script = ExtResource( 2 )
