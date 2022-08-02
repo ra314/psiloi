@@ -1,8 +1,8 @@
 extends Node2D
 
-const HERO_SPAWN_POS := Vector2(0,7)
-const ENEMY_SPAWN_POS := Vector2(7,7)
-const EXIT_POS := Vector2(19,1)
+const HERO_SPAWN_POS := Vector2(0,6)
+const ENEMY_SPAWN_POS := Vector2(3,3)
+const EXIT_POS := Vector2(6,6)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -13,6 +13,8 @@ func _ready():
 
 func create_valid_procedural_level() -> void:
 	var num_tries = 0
+	assert(LevelGenerator.LEVEL_SIZE.x > EXIT_POS.x)
+	assert(LevelGenerator.LEVEL_SIZE.y > EXIT_POS.y)
 	LevelGenerator.apply_random_level_to_tilemap($TileMap)
 	var path = NAVIGATOR.bfs_path(HERO_SPAWN_POS, EXIT_POS, $TileMap)
 	while(path == []):
