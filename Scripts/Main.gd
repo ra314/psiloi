@@ -10,6 +10,7 @@ func _ready():
 	
 	$Units/Player.init($TileMap, HERO_SPAWN_POS)
 	$Units/Enemy.init($TileMap, ENEMY_SPAWN_POS)
+	$Exit.position = $TileMap.map_to_world(EXIT_POS)
 
 func create_valid_procedural_level() -> void:
 	var num_tries = 0

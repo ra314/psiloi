@@ -13,13 +13,6 @@ func init(tilemap: TileMap, grid_pos: Vector2) -> Unit:
 	self.grid_pos = grid_pos
 	position = tilemap.map_to_world(grid_pos)
 	AUTO.pos_to_unit_map[grid_pos] = self
-	
-	timer = Timer.new()
-	timer.wait_time = MOVEMENT_PERIOD
-	timer.stop()
-	timer.connect("timeout", self, "move_along_path")
-	add_child(timer)
-	
 	return self
 
 # Return true if the movement is possible
@@ -36,6 +29,11 @@ func move_with_bfs_to(end_grid_pos: Vector2) -> bool:
 	return true
 
 func start_movement():
+	timer = Timer.new()
+	timer.wait_time = MOVEMENT_PERIOD
+	timer.stop()
+	timer.connect("timeout", self, "move_along_path")
+	add_child(timer)
 	timer.start()
 
 func check_and_perform_stab_attack(prev_grid_pos: Vector2) -> void:

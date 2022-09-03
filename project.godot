@@ -14,11 +14,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Scripts/LevelGenerator.gd"
 }, {
-"base": "Reference",
-"class": "Navigator",
-"language": "GDScript",
-"path": "res://Scripts/Navigator.gd"
-}, {
 "base": "Node2D",
 "class": "Unit",
 "language": "GDScript",
@@ -26,7 +21,6 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "LevelGenerator": "",
-"Navigator": "",
 "Unit": ""
 }
 
