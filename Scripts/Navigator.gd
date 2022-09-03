@@ -66,6 +66,13 @@ func get_grid_positions_within_distance(grid_pos: Vector2, distance: int) -> Arr
 				positions[adjacent_pos] = true
 	return positions.keys()
 
+# For example given a central point "C", this function will find points "P"
+# - - P --
+# - - P - -
+# P P C P P
+# - - P - -
+# - - P - -
+# But imagine something like this with a hexagonal grid.
 func get_radial_grid_positions_with_range(grid_pos: Vector2, radius: int) -> Array:
 	var grid_positions = []
 	for dir in DIR_ALL:

@@ -34,6 +34,7 @@ config/icon="res://icon.png"
 
 AUTO="*res://Scripts/Auto.gd"
 NAVIGATOR="*res://Scripts/Navigator.gd"
+TURNCOUNTER="*res://Scripts/TurnCounter.gd"
 
 [importer_defaults]
 

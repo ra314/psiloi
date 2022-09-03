@@ -40,3 +40,10 @@ script = null
 [node name="Player" parent="Units" instance=ExtResource( 3 )]
 
 [node name="Enemy" parent="Units" instance=ExtResource( 4 )]
+
+[node name="Label" type="Label" parent="."]
+margin_left = 448.0
+margin_right = 488.0
+margin_bottom = 14.0
+rect_scale = Vector2( 4, 4 )
+text = "Turn: "
