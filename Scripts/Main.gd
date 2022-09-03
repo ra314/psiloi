@@ -4,6 +4,8 @@ const HERO_SPAWN_POS := Vector2(0,6)
 const ENEMY_SPAWN_POS := Vector2(3,3)
 const EXIT_POS := Vector2(6,6)
 
+var units = [$Units/Player, $Units/Enemy]
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	create_valid_procedural_level()
@@ -25,6 +27,10 @@ func create_valid_procedural_level() -> void:
 	print("num_tries " + str(num_tries))
 	$TileMap.highlight_path(path)
 
+func reset_move_over_for_all_units():
+	for unit in units:
+		unit.move_over = false
+
 var prev_selected_unit: Node2D = null
 var is_selecting_attack := false
 func _input(event):
@@ -34,6 +40,7 @@ func _input(event):
 		
 		if is_selecting_attack:
 			prev_selected_unit.stationary_attack(grid_pos)
+			prev_selected_unit.action_done()
 			is_selecting_attack = false
 			prev_selected_unit = null
 			return

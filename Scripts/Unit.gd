@@ -6,10 +6,12 @@ var tilemap: TileMap
 var curr_path: Array
 const MOVEMENT_PERIOD := 0.2
 var timer: Timer
+var is_enemy: bool
+var move_over := false
 
-
-func init(tilemap: TileMap, grid_pos: Vector2) -> Unit:
+func init(tilemap: TileMap, grid_pos: Vector2, is_enemy: bool) -> Unit:
 	self.tilemap = tilemap
+	self.is_enemy = is_enemy
 	self.grid_pos = grid_pos
 	position = tilemap.map_to_world(grid_pos)
 	AUTO.pos_to_unit_map[grid_pos] = self
@@ -59,6 +61,9 @@ func move_along_path() -> void:
 func die():
 	visible = false
 	AUTO.pos_to_unit_map.erase(grid_pos)
+
+func action_done():
+	move_over = true
 
 ### ATTACKING
 var is_attack_highlight_on := false

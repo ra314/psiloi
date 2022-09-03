@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Tilemap/Tileset_Hex.tres" type="TileSet" id=1]
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://Scripts/TileMap.gd" type="Script" id=5]
 [ext_resource path="res://Tilemap/Tileset_UI.tres" type="TileSet" id=6]
 [ext_resource path="res://Assets/Object_Player_Exit.png" type="Texture" id=7]
+[ext_resource path="res://Scripts/TurnManager.gd" type="Script" id=8]
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 2 )
@@ -41,9 +42,12 @@ script = null
 
 [node name="Enemy" parent="Units" instance=ExtResource( 4 )]
 
-[node name="Label" type="Label" parent="."]
+[node name="TurnManager" type="Node2D" parent="."]
+script = ExtResource( 8 )
+
+[node name="Label" type="Label" parent="TurnManager"]
 margin_left = 448.0
 margin_right = 488.0
 margin_bottom = 14.0
 rect_scale = Vector2( 4, 4 )
-text = "Turn: "
+text = "Turn: 0"
