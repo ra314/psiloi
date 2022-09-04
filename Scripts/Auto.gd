@@ -3,7 +3,7 @@ extends Node
 var pos_to_unit_map: Dictionary = {}
 const BLOCKING_TILES = {0:true, -1:true}
 enum TEAM {UNSET, PLAYER, ENEMY}
-enum ATTACK {STAB, ARCHER, BOMBER, WIZARD, SHIELDBASH, LANCE}
+enum ATTACK {STAB, SLASH, ARCHER, BOMBER, WIZARD, SHIELDBASH, LANCE}
 var attack_enum_to_class_map = {ATTACK.ARCHER: ArcherStationaryAttack, \
 								ATTACK.BOMBER: BomberStationaryAttack, \
 								ATTACK.SHIELDBASH: ShieldBashStationaryAttack, \

@@ -19,7 +19,7 @@ func initialize_units() -> void:
 	$Units/Player.can_move = true
 	AUTO.players_set = HashSet.neww([$Units/Player])
 	$Units/Enemy.init($TileMap, ENEMY_SPAWN_POS, AUTO.TEAM.ENEMY, \
-		HashSet.neww([AUTO.ATTACK.STAB, AUTO.ATTACK.SHIELDBASH]))
+		HashSet.neww([AUTO.ATTACK.STAB, AUTO.ATTACK.SLASH]))
 	AUTO.enemies_set = HashSet.neww([$Units/Enemy])
 	
 	AUTO.all_units = [$Units/Player, $Units/Enemy]

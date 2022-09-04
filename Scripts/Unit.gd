@@ -31,7 +31,7 @@ func get_stationary_attack_implementation(allowed_attack_enums):
 	for attack_enum in allowed_attack_enums:
 		if attack_enum in AUTO.attack_enum_to_class_map:
 			return AUTO.attack_enum_to_class_map[attack_enum]
-	assert(false)
+	return StationaryAttackInterface
 
 # Return true if the movement is possible
 func move_with_bfs_to(end_grid_pos: Vector2) -> bool:
@@ -64,6 +64,19 @@ func check_and_perform_stab_attack(prev_grid_pos: Vector2) -> void:
 	var enemy: Unit = AUTO.pos_to_unit_map[target_grid_pos]
 	enemy.die()
 
+# Kills an enemy unit if you were and are adjacent to an enemey unit
+func check_and_perform_slash_attack(prev_grid_pos: Vector2) -> void:
+	if not (AUTO.ATTACK.SLASH in allowed_attack_enums):
+		return
+	var prev_adjacent_poss = NAVIGATOR.get_surrounding_tiles(prev_grid_pos)
+	var curr_adjacent_poss = NAVIGATOR.get_surrounding_tiles(grid_pos)
+	var target_poss = HashSet.intersection(HashSet.neww(prev_adjacent_poss),\
+											HashSet.neww(curr_adjacent_poss))
+	for target_grid_pos in target_poss:
+		var target_unit = AUTO.pos_to_unit_map.get(target_grid_pos, null)
+		if target_unit:
+			target_unit.die()
+
 func move_unit_directly_to(new_grid_pos: Vector2) -> void:
 	position = tilemap.map_to_world(new_grid_pos)
 	AUTO.pos_to_unit_map.erase(grid_pos)
@@ -77,6 +90,7 @@ func move_along_path() -> void:
 	
 	if curr_path == []:
 		check_and_perform_stab_attack(prev_pos)
+		check_and_perform_slash_attack(prev_pos)
 		timer.stop()
 		return
 
