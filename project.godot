@@ -15,6 +15,11 @@ _global_script_classes=[ {
 "path": "res://Scripts/TileMap.gd"
 }, {
 "base": "Reference",
+"class": "HashSet",
+"language": "GDScript",
+"path": "res://Scripts/HashSet.gd"
+}, {
+"base": "Reference",
 "class": "LevelGenerator",
 "language": "GDScript",
 "path": "res://Scripts/LevelGenerator.gd"
@@ -31,6 +36,7 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "CustomTileMap": "",
+"HashSet": "",
 "LevelGenerator": "",
 "StationaryAttackInterface": "",
 "Unit": ""

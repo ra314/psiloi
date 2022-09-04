@@ -6,17 +6,18 @@ var tilemap: TileMap
 var curr_path: Array
 const MOVEMENT_PERIOD := 0.2
 var timer: Timer
-var is_enemy: bool
-var move_over := false
+
+var team_enum = AUTO.TEAM.UNSET
+var can_move := false
 var Main
 
-func init(tilemap: TileMap, grid_pos: Vector2, is_enemy: bool) -> Unit:
+func init(tilemap: TileMap, grid_pos: Vector2, team_enum) -> Unit:
 	self.tilemap = tilemap
-	self.is_enemy = is_enemy
+	self.team_enum = team_enum
 	self.grid_pos = grid_pos
 	position = tilemap.map_to_world(grid_pos)
 	AUTO.pos_to_unit_map[grid_pos] = self
-	Main = get_parent()
+	Main = get_parent().get_parent()
 	return self
 
 # Return true if the movement is possible
@@ -65,14 +66,15 @@ func die():
 	AUTO.pos_to_unit_map.erase(grid_pos)
 
 func action_done():
-	move_over = true
+	can_move = false
+	if Main.TurnManager.check_ply_over(team_enum):
+		Main.TurnManager.increment_ply_count(team_enum)
 
-func stationary_attack(grid_pos) -> void:
+func stationary_attack(grid_pos) -> bool:
 	if $StationaryAttackInterface.is_attack_highlight_on:
-		$StationaryAttackInterface.perform_attack(grid_pos, tilemap)
-		return
+		return $StationaryAttackInterface.perform_attack(grid_pos, tilemap)
 	var possible_target_tiles = $StationaryAttackInterface.get_possible_target_tiles(grid_pos)
 	$StationaryAttackInterface.highlight_possible_target_tiles(possible_target_tiles, tilemap)
-	return
+	return false
 
 
