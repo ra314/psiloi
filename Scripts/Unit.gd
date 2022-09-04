@@ -103,6 +103,8 @@ func move_along_path() -> void:
 func die():
 	visible = false
 	AUTO.pos_to_unit_map.erase(grid_pos)
+	AUTO.get_units_by_team_enum(team_enum).erase(self)
+	AUTO.all_units.erase(self)
 
 func action_done():
 	can_move = false
