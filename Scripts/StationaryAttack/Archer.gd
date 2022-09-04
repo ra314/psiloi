@@ -1,6 +1,9 @@
 extends StationaryAttackInterface
 const ARCHER_ATTACK_RANGE := 5
 
+func get_attack_type():
+	return AUTO.ATTACK.ARCHER
+
 func get_attack_range() -> int:
 	return ARCHER_ATTACK_RANGE
 

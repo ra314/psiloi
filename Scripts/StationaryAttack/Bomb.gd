@@ -1,6 +1,9 @@
 extends StationaryAttackInterface
 const BOMBER_THROW_RANGE := 2
 
+func get_attack_type():
+	return AUTO.ATTACK.BOMB
+
 func get_attack_range() -> int:
 	return BOMBER_THROW_RANGE
 

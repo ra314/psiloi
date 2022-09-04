@@ -1,6 +1,9 @@
 extends StationaryAttackInterface
 const WIZARD_BLAST_RANGE := 6
 
+func get_attack_type():
+	return AUTO.ATTACK.WIZARD
+
 func get_attack_range() -> int:
 	return WIZARD_BLAST_RANGE
 

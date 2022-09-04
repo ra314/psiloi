@@ -2,7 +2,10 @@ extends Node2D
 class_name StationaryAttackInterface
 
 var is_attack_highlight_on := false
-var possible_attack_tiles: Array 
+var possible_attack_tiles: Array
+
+func get_attack_type():
+	assert(false)
 
 func get_attack_range() -> int:
 	assert(false)

@@ -7,14 +7,16 @@ var curr_path: Array
 const MOVEMENT_PERIOD := 0.2
 var timer: Timer
 
+var allowed_attack_enums: Dictionary
 var team_enum = AUTO.TEAM.UNSET
 var can_move := false
 var Main
 
-func init(tilemap: TileMap, grid_pos: Vector2, team_enum) -> Unit:
+func init(tilemap: TileMap, grid_pos: Vector2, team_enum, allowed_attack_enums: Dictionary) -> Unit:
 	self.tilemap = tilemap
 	self.team_enum = team_enum
 	self.grid_pos = grid_pos
+	self.allowed_attack_enums = allowed_attack_enums
 	position = tilemap.map_to_world(grid_pos)
 	AUTO.pos_to_unit_map[grid_pos] = self
 	Main = get_parent().get_parent()
@@ -41,7 +43,10 @@ func start_movement():
 	add_child(timer)
 	timer.start()
 
+# Attacks if you move directly towards a unit and are now adjacent
 func check_and_perform_stab_attack(prev_grid_pos: Vector2) -> void:
+	if not (AUTO.ATTACK.STAB in allowed_attack_enums):
+		return
 	var target_grid_pos = NAVIGATOR.get_next_grid_pos_in_same_dir(prev_grid_pos, grid_pos)
 	if !(target_grid_pos in AUTO.pos_to_unit_map):
 		return
@@ -71,6 +76,8 @@ func action_done():
 		Main.TurnManager.increment_ply_count(team_enum)
 
 func stationary_attack(grid_pos) -> bool:
+	if not ($StationaryAttackInterface.get_attack_type() in allowed_attack_enums):
+		return false
 	if $StationaryAttackInterface.is_attack_highlight_on:
 		return $StationaryAttackInterface.perform_attack(grid_pos, tilemap)
 	var possible_target_tiles = $StationaryAttackInterface.get_possible_target_tiles(grid_pos)
