@@ -9,10 +9,20 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "TileMap",
+"class": "CustomTileMap",
+"language": "GDScript",
+"path": "res://Scripts/TileMap.gd"
+}, {
 "base": "Reference",
 "class": "LevelGenerator",
 "language": "GDScript",
 "path": "res://Scripts/LevelGenerator.gd"
+}, {
+"base": "Node2D",
+"class": "StationaryAttackInterface",
+"language": "GDScript",
+"path": "res://Scripts/StationaryAttack/StationaryAttackInterface.gd"
 }, {
 "base": "Node2D",
 "class": "Unit",
@@ -20,7 +30,9 @@ _global_script_classes=[ {
 "path": "res://Scripts/Unit.gd"
 } ]
 _global_script_class_icons={
+"CustomTileMap": "",
 "LevelGenerator": "",
+"StationaryAttackInterface": "",
 "Unit": ""
 }
 

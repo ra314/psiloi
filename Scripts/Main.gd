@@ -10,8 +10,8 @@ var units = [$Units/Player, $Units/Enemy]
 func _ready():
 	create_valid_procedural_level()
 	
-	$Units/Player.init($TileMap, HERO_SPAWN_POS)
-	$Units/Enemy.init($TileMap, ENEMY_SPAWN_POS)
+	$Units/Player.init($TileMap, HERO_SPAWN_POS, false)
+	$Units/Enemy.init($TileMap, ENEMY_SPAWN_POS, true)
 	$Exit.position = $TileMap.map_to_world(EXIT_POS)
 
 func create_valid_procedural_level() -> void:
@@ -40,7 +40,6 @@ func _input(event):
 		
 		if is_selecting_attack:
 			prev_selected_unit.stationary_attack(grid_pos)
-			prev_selected_unit.action_done()
 			is_selecting_attack = false
 			prev_selected_unit = null
 			return
@@ -48,7 +47,8 @@ func _input(event):
 		if prev_selected_unit == null:
 			prev_selected_unit = curr_selected_unit
 		elif curr_selected_unit == prev_selected_unit:
-			is_selecting_attack = !curr_selected_unit.stationary_attack()
+			is_selecting_attack = true
+			curr_selected_unit.stationary_attack(grid_pos)
 		else:
 			prev_selected_unit.move_with_bfs_to(grid_pos)
 			prev_selected_unit = null

@@ -1,4 +1,6 @@
 extends TileMap
+class_name CustomTileMap
+
 const HIGHLIGHT_TILE_ENUM = 2
 var highlight_tile_grid_pos_to_OG_value = {}
 
