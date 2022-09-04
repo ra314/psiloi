@@ -40,7 +40,9 @@ script = null
 
 [node name="Player" parent="Units" instance=ExtResource( 3 )]
 
-[node name="Enemy" parent="Units" instance=ExtResource( 4 )]
+[node name="Enemy1" parent="Units" instance=ExtResource( 4 )]
+
+[node name="Enemy2" parent="Units" instance=ExtResource( 4 )]
 
 [node name="TurnManager" type="Node2D" parent="."]
 script = ExtResource( 8 )

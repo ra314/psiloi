@@ -17,5 +17,8 @@ func perform_attack(target_grid_pos: Vector2, tilemap: CustomTileMap, unit) -> b
 	# Attack not possible, since target isn't a unit
 	if not (target_grid_pos in AUTO.pos_to_unit_map):
 		return false
-	AUTO.pos_to_unit_map[target_grid_pos].die()
+	var target_unit = AUTO.pos_to_unit_map.get(target_grid_pos, null)
+	if target_unit:
+		if unit.is_unit_on_other_team(target_unit):
+			target_unit.die()
 	return true

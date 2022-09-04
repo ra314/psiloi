@@ -1,7 +1,8 @@
 extends Node2D
 
 const HERO_SPAWN_POS := Vector2(0,6)
-const ENEMY_SPAWN_POS := Vector2(3,3)
+const ENEMY_SPAWN_POS1 := Vector2(3,3)
+const ENEMY_SPAWN_POS2 := Vector2(3,4)
 const EXIT_POS := Vector2(6,6)
 
 onready var TurnManager = $TurnManager
@@ -15,14 +16,16 @@ func _ready():
 
 func initialize_units() -> void:
 	$Units/Player.init($TileMap, HERO_SPAWN_POS, AUTO.TEAM.PLAYER, \
-		HashSet.neww([AUTO.ATTACK.STAB, AUTO.ATTACK.LANCE]))
+		HashSet.neww([AUTO.ATTACK.STAB, AUTO.ATTACK.ARCHER]))
 	$Units/Player.can_move = true
 	AUTO.players_set = HashSet.neww([$Units/Player])
-	$Units/Enemy.init($TileMap, ENEMY_SPAWN_POS, AUTO.TEAM.ENEMY, \
-		HashSet.neww([AUTO.ATTACK.STAB, AUTO.ATTACK.SLASH]))
-	AUTO.enemies_set = HashSet.neww([$Units/Enemy])
+	$Units/Enemy1.init($TileMap, ENEMY_SPAWN_POS1, AUTO.TEAM.ENEMY, \
+		HashSet.neww([AUTO.ATTACK.SLASH]))
+	$Units/Enemy2.init($TileMap, ENEMY_SPAWN_POS2, AUTO.TEAM.ENEMY, \
+		HashSet.neww([AUTO.ATTACK.SLASH]))
+	AUTO.enemies_set = HashSet.neww([$Units/Enemy1, $Units/Enemy2])
 	
-	AUTO.all_units = [$Units/Player, $Units/Enemy]
+	AUTO.all_units = [$Units/Player, $Units/Enemy1, $Units/Enemy2]
 
 func create_valid_procedural_level() -> void:
 	var num_tries = 0
@@ -34,7 +37,9 @@ func create_valid_procedural_level() -> void:
 		LevelGenerator.apply_random_level_to_tilemap($TileMap)
 		path = NAVIGATOR.bfs_path(HERO_SPAWN_POS, EXIT_POS, $TileMap)
 		num_tries += 1
-		if $TileMap.get_cellv(ENEMY_SPAWN_POS) in AUTO.BLOCKING_TILES:
+		if $TileMap.get_cellv(ENEMY_SPAWN_POS1) in AUTO.BLOCKING_TILES:
+			path = []
+		if $TileMap.get_cellv(ENEMY_SPAWN_POS2) in AUTO.BLOCKING_TILES:
 			path = []
 	print("num_tries " + str(num_tries))
 	$TileMap.highlight_path(path)

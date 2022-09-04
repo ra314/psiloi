@@ -33,7 +33,8 @@ func perform_attack(target_grid_pos: Vector2, tilemap: CustomTileMap, unit) -> b
 		var new_pos_for_unit = NAVIGATOR.call(attack_dir, bashed_unit.grid_pos)
 		# Kill unit if pushed into a blocked tile
 		if tilemap.get_cellv(new_pos_for_unit) in AUTO.BLOCKING_TILES:
-			bashed_unit.die()
+			if unit.is_unit_on_other_team(bashed_unit):
+				bashed_unit.die()
 		else:
 			bashed_unit.move_with_bfs_to(new_pos_for_unit)
 	return true

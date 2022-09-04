@@ -15,6 +15,11 @@ _global_script_classes=[ {
 "path": "res://Scripts/StationaryAttack/Archer.gd"
 }, {
 "base": "StationaryAttackInterface",
+"class": "AxeStationaryAttack",
+"language": "GDScript",
+"path": "res://Scripts/StationaryAttack/Axe.gd"
+}, {
+"base": "StationaryAttackInterface",
 "class": "BomberStationaryAttack",
 "language": "GDScript",
 "path": "res://Scripts/StationaryAttack/Bomber.gd"
@@ -61,6 +66,7 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "ArcherStationaryAttack": "",
+"AxeStationaryAttack": "",
 "BomberStationaryAttack": "",
 "CustomTileMap": "",
 "HashSet": "",

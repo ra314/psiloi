@@ -26,6 +26,8 @@ func perform_attack(target_grid_pos: Vector2, tilemap: CustomTileMap, unit) -> b
 		return false
 	for attacked_grid_pos in \
 		NAVIGATOR.get_grid_positions_along_line(curr_grid_pos, WIZARD_BLAST_RANGE, attack_direction):
-		if attacked_grid_pos in AUTO.pos_to_unit_map:
-			AUTO.pos_to_unit_map[attacked_grid_pos].die()
+		var target_unit = AUTO.pos_to_unit_map.get(attacked_grid_pos, null)
+		if target_unit:
+			if unit.is_unit_on_other_team(target_unit):
+				target_unit.die()
 	return true

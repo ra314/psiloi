@@ -54,6 +54,10 @@ func start_movement():
 	add_child(timer)
 	timer.start()
 
+# Returns true if the provided unit is on the other tream
+func is_unit_on_other_team(unit):
+	return unit.team_enum == AUTO.get_other_team_enum(team_enum)
+
 # Attacks if you move directly towards a unit and are now adjacent
 func check_and_perform_stab_attack(prev_grid_pos: Vector2) -> void:
 	if not (AUTO.ATTACK.STAB in allowed_attack_enums):
@@ -62,7 +66,8 @@ func check_and_perform_stab_attack(prev_grid_pos: Vector2) -> void:
 	if !(target_grid_pos in AUTO.pos_to_unit_map):
 		return
 	var enemy: Unit = AUTO.pos_to_unit_map[target_grid_pos]
-	enemy.die()
+	if is_unit_on_other_team(enemy):
+		enemy.die()
 
 # Kills an enemy unit if you were and are adjacent to an enemey unit
 func check_and_perform_slash_attack(prev_grid_pos: Vector2) -> void:
@@ -75,7 +80,8 @@ func check_and_perform_slash_attack(prev_grid_pos: Vector2) -> void:
 	for target_grid_pos in target_poss:
 		var target_unit = AUTO.pos_to_unit_map.get(target_grid_pos, null)
 		if target_unit:
-			target_unit.die()
+			if is_unit_on_other_team(target_unit):
+				target_unit.die()
 
 func move_unit_directly_to(new_grid_pos: Vector2) -> void:
 	position = tilemap.map_to_world(new_grid_pos)
