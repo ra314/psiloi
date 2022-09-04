@@ -11,8 +11,8 @@ func get_attack_range() -> int:
 func get_possible_target_tiles(grid_pos: Vector2) -> Array:
 	return NAVIGATOR.get_radial_grid_positions_with_range(grid_pos, ARCHER_ATTACK_RANGE)
 
-func perform_attack(target_grid_pos: Vector2, tilemap: CustomTileMap) -> bool:
-	if not .perform_attack(target_grid_pos, tilemap):
+func perform_attack(target_grid_pos: Vector2, tilemap: CustomTileMap, unit) -> bool:
+	if not .perform_attack(target_grid_pos, tilemap, unit):
 		return false
 	# Attack not possible, since target isn't a unit
 	if not (target_grid_pos in AUTO.pos_to_unit_map):

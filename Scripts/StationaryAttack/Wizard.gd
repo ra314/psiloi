@@ -13,8 +13,8 @@ func get_possible_target_tiles(grid_pos: Vector2) -> Array:
 	curr_grid_pos = grid_pos
 	return NAVIGATOR.get_radial_grid_positions_with_range(grid_pos, WIZARD_BLAST_RANGE)
 
-func perform_attack(target_grid_pos: Vector2, tilemap: CustomTileMap) -> bool:
-	if not .perform_attack(target_grid_pos, tilemap):
+func perform_attack(target_grid_pos: Vector2, tilemap: CustomTileMap, unit) -> bool:
+	if not .perform_attack(target_grid_pos, tilemap, unit):
 		return false
 	var attack_direction = NAVIGATOR.get_direction_between_positions(curr_grid_pos, target_grid_pos)
 	curr_grid_pos = null

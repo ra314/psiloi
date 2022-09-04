@@ -23,7 +23,7 @@ func highlight_possible_target_tiles(target_tiles: Array, tilemap: CustomTileMap
 # Not meant to be called directly, only in conjunction with subclasses
 # Bool indicates whether the attack took place or not
 # For example if the target_grid_pos is not in one of the possible target tiles, false is returned
-func perform_attack(target_grid_pos: Vector2, tilemap: CustomTileMap) -> bool:
+func perform_attack(target_grid_pos: Vector2, tilemap: CustomTileMap, unit) -> bool:
 	# Revert previous side effects
 	tilemap.unhighlight_prev_tiles()
 	is_attack_highlight_on = false

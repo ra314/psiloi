@@ -35,10 +35,16 @@ func initialize_stationary_attack(allowed_attack_enums):
 				stationary_attack_node = BomberStationaryAttack.new()
 			elif attack_enum == AUTO.ATTACK.WIZARD:
 				stationary_attack_node = WizardStationaryAttack.new()
+			elif attack_enum == AUTO.ATTACK.SHIELDBASH:
+				stationary_attack_node = ShieldBashStationaryAttack.new()
 			else:
 				# Unimplemented stationary attack
 				assert(false)
 			return
+		elif attack_enum in AUTO.dynamic_attacks:
+			pass
+		else:
+			assert(false)
 
 # Return true if the movement is possible
 func move_with_bfs_to(end_grid_pos: Vector2) -> bool:
@@ -99,7 +105,7 @@ func stationary_attack(grid_pos) -> bool:
 	if not (stationary_attack_node.get_attack_type() in allowed_attack_enums):
 		return false
 	if stationary_attack_node.is_attack_highlight_on:
-		return stationary_attack_node.perform_attack(grid_pos, tilemap)
+		return stationary_attack_node.perform_attack(grid_pos, tilemap, self)
 	var possible_target_tiles = stationary_attack_node.get_possible_target_tiles(grid_pos)
 	stationary_attack_node.highlight_possible_target_tiles(possible_target_tiles, tilemap)
 	return false
