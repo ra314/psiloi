@@ -64,13 +64,16 @@ func check_and_perform_stab_attack(prev_grid_pos: Vector2) -> void:
 	var enemy: Unit = AUTO.pos_to_unit_map[target_grid_pos]
 	enemy.die()
 
-func move_along_path() -> void:
-	var node: Vector2 = curr_path.pop_front()
-	position = tilemap.map_to_world(node)
+func move_unit_directly_to(new_grid_pos: Vector2) -> void:
+	position = tilemap.map_to_world(new_grid_pos)
 	AUTO.pos_to_unit_map.erase(grid_pos)
-	var prev_pos = grid_pos
-	grid_pos = node
+	grid_pos = new_grid_pos
 	AUTO.pos_to_unit_map[grid_pos] = self
+
+func move_along_path() -> void:
+	var new_grid_pos: Vector2 = curr_path.pop_front()
+	var prev_pos = grid_pos
+	move_unit_directly_to(new_grid_pos)
 	
 	if curr_path == []:
 		check_and_perform_stab_attack(prev_pos)
