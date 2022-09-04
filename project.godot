@@ -9,6 +9,16 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "StationaryAttackInterface",
+"class": "ArcherStationaryAttack",
+"language": "GDScript",
+"path": "res://Scripts/StationaryAttack/Archer.gd"
+}, {
+"base": "StationaryAttackInterface",
+"class": "BomberStationaryAttack",
+"language": "GDScript",
+"path": "res://Scripts/StationaryAttack/Bomb.gd"
+}, {
 "base": "TileMap",
 "class": "CustomTileMap",
 "language": "GDScript",
@@ -33,13 +43,21 @@ _global_script_classes=[ {
 "class": "Unit",
 "language": "GDScript",
 "path": "res://Scripts/Unit.gd"
+}, {
+"base": "StationaryAttackInterface",
+"class": "WizardStationaryAttack",
+"language": "GDScript",
+"path": "res://Scripts/StationaryAttack/Wizard.gd"
 } ]
 _global_script_class_icons={
+"ArcherStationaryAttack": "",
+"BomberStationaryAttack": "",
 "CustomTileMap": "",
 "HashSet": "",
 "LevelGenerator": "",
 "StationaryAttackInterface": "",
-"Unit": ""
+"Unit": "",
+"WizardStationaryAttack": ""
 }
 
 [application]

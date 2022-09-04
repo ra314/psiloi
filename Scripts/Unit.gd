@@ -11,16 +11,34 @@ var allowed_attack_enums: Dictionary
 var team_enum = AUTO.TEAM.UNSET
 var can_move := false
 var Main
+var stationary_attack_node: StationaryAttackInterface
 
 func init(tilemap: TileMap, grid_pos: Vector2, team_enum, allowed_attack_enums: Dictionary) -> Unit:
 	self.tilemap = tilemap
 	self.team_enum = team_enum
 	self.grid_pos = grid_pos
 	self.allowed_attack_enums = allowed_attack_enums
+	initialize_stationary_attack(allowed_attack_enums)
+	
 	position = tilemap.map_to_world(grid_pos)
 	AUTO.pos_to_unit_map[grid_pos] = self
 	Main = get_parent().get_parent()
 	return self
+
+# TODO: This doesn't work with multiple allowed stationary attacks
+func initialize_stationary_attack(allowed_attack_enums):
+	for attack_enum in allowed_attack_enums:
+		if attack_enum in AUTO.stationary_attacks:
+			if attack_enum == AUTO.ATTACK.ARCHER:
+				stationary_attack_node = ArcherStationaryAttack.new()
+			elif attack_enum == AUTO.ATTACK.BOMBER:
+				stationary_attack_node = BomberStationaryAttack.new()
+			elif attack_enum == AUTO.ATTACK.WIZARD:
+				stationary_attack_node = WizardStationaryAttack.new()
+			else:
+				# Unimplemented stationary attack
+				assert(false)
+			return
 
 # Return true if the movement is possible
 func move_with_bfs_to(end_grid_pos: Vector2) -> bool:
@@ -76,12 +94,13 @@ func action_done():
 		Main.TurnManager.increment_ply_count(team_enum)
 
 func stationary_attack(grid_pos) -> bool:
-	if not ($StationaryAttackInterface.get_attack_type() in allowed_attack_enums):
+	if stationary_attack_node == null:
 		return false
-	if $StationaryAttackInterface.is_attack_highlight_on:
-		return $StationaryAttackInterface.perform_attack(grid_pos, tilemap)
-	var possible_target_tiles = $StationaryAttackInterface.get_possible_target_tiles(grid_pos)
-	$StationaryAttackInterface.highlight_possible_target_tiles(possible_target_tiles, tilemap)
+	if not (stationary_attack_node.get_attack_type() in allowed_attack_enums):
+		return false
+	if stationary_attack_node.is_attack_highlight_on:
+		return stationary_attack_node.perform_attack(grid_pos, tilemap)
+	var possible_target_tiles = stationary_attack_node.get_possible_target_tiles(grid_pos)
+	stationary_attack_node.highlight_possible_target_tiles(possible_target_tiles, tilemap)
 	return false
-
 

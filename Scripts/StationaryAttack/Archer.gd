@@ -1,4 +1,5 @@
 extends StationaryAttackInterface
+class_name ArcherStationaryAttack
 const ARCHER_ATTACK_RANGE := 5
 
 func get_attack_type():

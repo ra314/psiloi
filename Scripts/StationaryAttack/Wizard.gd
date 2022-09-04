@@ -1,4 +1,5 @@
 extends StationaryAttackInterface
+class_name WizardStationaryAttack
 const WIZARD_BLAST_RANGE := 6
 
 func get_attack_type():

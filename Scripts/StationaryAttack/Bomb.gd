@@ -1,8 +1,9 @@
 extends StationaryAttackInterface
+class_name BomberStationaryAttack
 const BOMBER_THROW_RANGE := 2
 
 func get_attack_type():
-	return AUTO.ATTACK.BOMB
+	return AUTO.ATTACK.BOMBER
 
 func get_attack_range() -> int:
 	return BOMBER_THROW_RANGE
@@ -25,5 +26,5 @@ func perform_attack(target_grid_pos: Vector2, tilemap: CustomTileMap) -> bool:
 var BOMB = load("res://Scenes/Bomb.tscn")
 func add_bomb(target_grid_pos: Vector2, tilemap: CustomTileMap):
 	var new_bomb = BOMB.instance()
-	get_parent().Main.add_child(new_bomb)
+	tilemap.add_child(new_bomb)
 	new_bomb.position = tilemap.map_to_world(target_grid_pos)
