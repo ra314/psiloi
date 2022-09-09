@@ -1,6 +1,6 @@
 class_name LevelGenerator
 
-const LEVEL_SIZE = Vector2(7,7)
+const LEVEL_SIZE = Vector2(20,20)
 const HIGHEST_INT_TILE_VALUE := 1
 
 static func init_noise() -> OpenSimplexNoise:

@@ -10,11 +10,24 @@ onready var TurnManager = $TurnManager
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	create_valid_procedural_level()
-	initialize_units()
-	
-	$Exit.position = $TileMap.map_to_world(EXIT_POS)
+	static_initialize_units()
 
-func initialize_units() -> void:
+func dynamic_initialize_units() -> void:
+	
+	$Exit.position = Vector2(get_random_non_blocking_tile())
+
+func get_random_non_blocking_tile() -> Vector2:
+	const SEARCH_LIMIT = 1000
+	var count = 0
+	var curr_pos = Vector2(-1,-1)
+	while $TileMap.get_cellv(curr_pos) in AUTO.BLOCKING_TILES:
+		curr_pos = Vector2(randi()%(int(LevelGenerator.LEVEL_SIZE.x)), \
+							randi()%(int(LevelGenerator.LEVEL_SIZE.y)))
+		count += 1
+		assert(count < SEARCH_LIMIT)
+	return curr_pos
+
+func static_initialize_units() -> void:
 	$Units/Player.init($TileMap, HERO_SPAWN_POS, AUTO.TEAM.PLAYER, \
 		HashSet.neww([AUTO.ATTACK.STAB, AUTO.ATTACK.ARCHER]))
 	$Units/Player.can_move = true
@@ -26,6 +39,7 @@ func initialize_units() -> void:
 	AUTO.enemies_set = HashSet.neww([$Units/Enemy1, $Units/Enemy2])
 	
 	AUTO.all_units = [$Units/Player, $Units/Enemy1, $Units/Enemy2]
+	$Exit.position = $TileMap.map_to_world(EXIT_POS)
 
 func create_valid_procedural_level() -> void:
 	var num_tries = 0
