@@ -8,3 +8,10 @@ scale = Vector2( 0.063, 0.063 )
 texture = ExtResource( 1 )
 centered = false
 script = ExtResource( 2 )
+
+[node name="Health" type="Label" parent="."]
+margin_left = 448.0
+margin_right = 456.0
+margin_bottom = 16.0
+rect_scale = Vector2( 10, 10 )
+text = "3"

@@ -12,6 +12,11 @@ var team_enum = AUTO.TEAM.UNSET
 var can_move := false
 var Main
 var stationary_attack_implementation: StationaryAttackInterface
+const STARTING_HEALTH = 3
+var _health: int
+func set_health(value: int):
+	$Health.text = str(value)
+	_health = value
 
 func init(tilemap: TileMap, grid_pos: Vector2, team_enum, allowed_attack_enums: Dictionary) -> Unit:
 	self.tilemap = tilemap
@@ -22,6 +27,10 @@ func init(tilemap: TileMap, grid_pos: Vector2, team_enum, allowed_attack_enums: 
 	if sai != null:
 		sai.new()
 	self.stationary_attack_implementation = sai
+	
+	if team_enum == AUTO.TEAM.PLAYER:
+		$Health.visible = true
+		set_health(STARTING_HEALTH)
 	
 	position = tilemap.map_to_world(grid_pos)
 	AUTO.pos_to_unit_map[grid_pos] = self
@@ -104,10 +113,13 @@ func move_along_path() -> void:
 		return
 
 func die():
-	visible = false
-	AUTO.pos_to_unit_map.erase(grid_pos)
-	AUTO.get_units_by_team_enum(team_enum).erase(self)
-	AUTO.all_units.erase(self)
+	if _health>1:
+		set_health(_health-1)
+	else:
+		visible = false
+		AUTO.pos_to_unit_map.erase(grid_pos)
+		AUTO.get_units_by_team_enum(team_enum).erase(self)
+		AUTO.all_units.erase(self)
 
 func action_done():
 	can_move = false
