@@ -11,7 +11,7 @@ func get_attack_range() -> int:
 var curr_grid_pos
 func get_possible_target_tiles(grid_pos: Vector2) -> Array:
 	curr_grid_pos = grid_pos
-	return NAVIGATOR.get_radial_grid_positions_with_range(grid_pos, WIZARD_BLAST_RANGE)
+	return NAVIGATOR.get_radial_grid_positions_with_range(grid_pos, 1, WIZARD_BLAST_RANGE)
 
 func perform_attack(target_grid_pos: Vector2, tilemap: CustomTileMap, unit) -> bool:
 	if not .perform_attack(target_grid_pos, tilemap, unit):

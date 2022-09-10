@@ -25,17 +25,34 @@ func init(tilemap: TileMap, grid_pos: Vector2, team_enum, allowed_attack_enums: 
 	self.allowed_attack_enums = allowed_attack_enums
 	var sai = get_stationary_attack_implementation(allowed_attack_enums)
 	if sai != null:
-		sai.new()
+		sai = sai.new()
 	self.stationary_attack_implementation = sai
 	
 	if team_enum == AUTO.TEAM.PLAYER:
 		$Health.visible = true
 		set_health(STARTING_HEALTH)
+	elif team_enum == AUTO.TEAM.ENEMY:
+		init_enemy_sprite(allowed_attack_enums)
 	
 	position = tilemap.map_to_world(grid_pos)
 	AUTO.pos_to_unit_map[grid_pos] = self
 	Main = get_parent().get_parent()
 	return self
+
+var ARCHER_TEX = load("res://Assets/Units/Enemy/Unit_Enemy_Archer.png")
+var BOMBER_TEX = load("res://Assets/Units/Enemy/Unit_Enemy_Bomber.png")
+var MINION_TEX = load("res://Assets/Units/Enemy/Unit_Enemy_Minion.png")
+var WIZARD_TEX = load("res://Assets/Units/Enemy/Unit_Enemy_Wizard.png")
+func init_enemy_sprite(allowed_attack_enums: Dictionary) -> void:
+	if AUTO.ATTACK.ARCHER in allowed_attack_enums:
+		self.texture = ARCHER_TEX
+	elif AUTO.ATTACK.BOMBER in allowed_attack_enums:
+		self.texture = BOMBER_TEX
+	elif (AUTO.ATTACK.STAB in allowed_attack_enums) or \
+		(AUTO.ATTACK.SLASH in allowed_attack_enums):
+		self.texture = MINION_TEX
+	elif AUTO.ATTACK.WIZARD in allowed_attack_enums:
+		self.texture = WIZARD_TEX
 
 # TODO: This doesn't work with multiple allowed stationary attacks
 func get_stationary_attack_implementation(allowed_attack_enums):

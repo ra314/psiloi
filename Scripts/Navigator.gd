@@ -73,13 +73,14 @@ func get_grid_positions_within_distance(grid_pos: Vector2, distance: int) -> Arr
 # - - P - -
 # - - P - -
 # But imagine something like this with a hexagonal grid.
-func get_radial_grid_positions_with_range(grid_pos: Vector2, radius: int) -> Array:
+func get_radial_grid_positions_with_range(grid_pos: Vector2, min_radius: int, max_radius: int) -> Array:
 	var grid_positions = []
 	for dir in DIR_ALL:
 		var curr_pos = grid_pos
-		for i in range(radius):
+		for i in range(max_radius):
 			curr_pos = call(dir, curr_pos)
-			grid_positions.append(curr_pos)
+			if i >= min_radius:
+				grid_positions.append(curr_pos)
 	return grid_positions
 
 func get_next_grid_pos_in_same_dir(prev_grid_pos: Vector2, curr_grid_pos: Vector2) -> Vector2:
