@@ -1,12 +1,13 @@
 extends Node2D
-
-const HERO_SPAWN_POS := Vector2(0,6)
+ 
 const ENEMY_SPAWN_POS1 := Vector2(3,3)
 const ENEMY_SPAWN_POS2 := Vector2(3,4)
+const ENTRY_POS := Vector2(0,6)
 const EXIT_POS := Vector2(6,6)
 
 var PLAYER = load("res://Scenes/Player.tscn")
 var ENEMY = load("res://Scenes/Enemy.tscn")
+var LADDER = load("res://Scenes/Level Components/Ladder.tscn")
 
 onready var TurnManager = $TurnManager
 
@@ -28,6 +29,14 @@ func dynamic_initialize_units() -> void:
 	$PowerupSelector.visible = true
 	$PowerupSelector.init(AUTO.ATTACK.keys())
 	
+	var entry = LADDER.instance()
+	entry.position = $TileMap.map_to_world(get_random_non_blocking_tile())
+	add_child(entry)
+	var exit = LADDER.instance()
+	exit.position = $TileMap.map_to_world(get_random_non_blocking_tile())
+	exit.modulate = Color(0,0,0,1)
+	add_child(exit)
+	
 	label.text = "Click anywhere to place the Hero."
 	var grid_pos = yield(self, "mouse_click")[0]
 	var player = AUTO.add_childv2($Units, PLAYER.instance()).init($TileMap, grid_pos, \
@@ -47,7 +56,6 @@ func dynamic_initialize_units() -> void:
 	
 	label.queue_free()
 	$PowerupSelector.visible = false
-	$Exit.position = $TileMap.map_to_world(get_random_non_blocking_tile())
 
 func get_random_non_blocking_tile() -> Vector2:
 	var SEARCH_LIMIT = 1000
@@ -61,7 +69,7 @@ func get_random_non_blocking_tile() -> Vector2:
 	return curr_pos
 
 func static_initialize_units() -> void:
-	var player = AUTO.add_childv2($Units, PLAYER.instance()).init($TileMap, HERO_SPAWN_POS, \
+	var player = AUTO.add_childv2($Units, PLAYER.instance()).init($TileMap, ENTRY_POS, \
 		AUTO.TEAM.PLAYER, HashSet.neww([AUTO.ATTACK.STAB, AUTO.ATTACK.ARCHER]))
 	var enemy1 = AUTO.add_childv2($Units, ENEMY.instance()).init($TileMap, ENEMY_SPAWN_POS1, \
 		AUTO.TEAM.ENEMY, HashSet.neww([AUTO.ATTACK.SLASH]))
@@ -70,17 +78,17 @@ func static_initialize_units() -> void:
 	AUTO.players_set = HashSet.neww([player])
 	AUTO.enemies_set = HashSet.neww([enemy1, enemy2])
 	AUTO.all_units = [player, enemy1, enemy2]
-	$Exit.position = $TileMap.map_to_world(EXIT_POS)
+	LADDER.instance().position = $TileMap.map_to_world(EXIT_POS)
 
 func create_valid_procedural_level() -> void:
 	var num_tries = 0
 	assert(LevelGenerator.LEVEL_SIZE.x > EXIT_POS.x)
 	assert(LevelGenerator.LEVEL_SIZE.y > EXIT_POS.y)
 	LevelGenerator.apply_random_level_to_tilemap($TileMap)
-	var path = NAVIGATOR.bfs_path(HERO_SPAWN_POS, EXIT_POS, $TileMap)
+	var path = NAVIGATOR.bfs_path(ENTRY_POS, EXIT_POS, $TileMap)
 	while(path == []):
 		LevelGenerator.apply_random_level_to_tilemap($TileMap)
-		path = NAVIGATOR.bfs_path(HERO_SPAWN_POS, EXIT_POS, $TileMap)
+		path = NAVIGATOR.bfs_path(ENTRY_POS, EXIT_POS, $TileMap)
 		num_tries += 1
 		if $TileMap.get_cellv(ENEMY_SPAWN_POS1) in AUTO.BLOCKING_TILES:
 			path = []

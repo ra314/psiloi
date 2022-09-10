@@ -1,12 +1,10 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Tilemap/Tileset_Hex.tres" type="TileSet" id=1]
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=2]
-[ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scenes/Level Components/Powerup Selector.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Scripts/TileMap.gd" type="Script" id=5]
 [ext_resource path="res://Tilemap/Tileset_UI.tres" type="TileSet" id=6]
-[ext_resource path="res://Assets/Object_Player_Exit.png" type="Texture" id=7]
 [ext_resource path="res://Scripts/TurnManager.gd" type="Script" id=8]
 
 [node name="Main" type="Node2D"]
@@ -30,11 +28,6 @@ cell_half_offset = 1
 show_collision = true
 format = 1
 script = ExtResource( 5 )
-
-[node name="Exit" parent="." instance=ExtResource( 3 )]
-position = Vector2( 912, 84 )
-texture = ExtResource( 7 )
-script = null
 
 [node name="Units" type="Node2D" parent="."]
 
