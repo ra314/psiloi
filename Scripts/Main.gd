@@ -137,6 +137,15 @@ func _input(event):
 		var grid_pos = $TileMap.world_to_map(event.position/2)
 		var curr_selected_unit = AUTO.pos_to_unit_map.get(grid_pos, null)
 		emit_signal("mouse_click", grid_pos, curr_selected_unit)
+	if Input.is_action_just_pressed("ui_accept"):
+		show_powerup_change_ui()
+
+func show_powerup_change_ui():
+	if $PowerupSelector.visible:
+		AUTO.players_set.keys()[0]\
+			.set_allowed_attack_enums(\
+			HashSet.neww($PowerupSelector.get_selected_powerups()))
+	$PowerupSelector.visible = !$PowerupSelector.visible
 
 var prev_selected_unit: Node2D = null
 var is_selecting_attack := false
