@@ -25,3 +25,7 @@ func get_other_team_enum(team_enum):
 	if team_enum == TEAM.ENEMY:
 		return TEAM.PLAYER
 	return TEAM.ENEMY
+
+func add_childv2(x, y):
+	x.add_child(y)
+	return y

@@ -1,9 +1,8 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Tilemap/Tileset_Hex.tres" type="TileSet" id=1]
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=2]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Scenes/Enemy.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Scripts/TileMap.gd" type="Script" id=5]
 [ext_resource path="res://Tilemap/Tileset_UI.tres" type="TileSet" id=6]
 [ext_resource path="res://Assets/Object_Player_Exit.png" type="Texture" id=7]
@@ -37,12 +36,6 @@ texture = ExtResource( 7 )
 script = null
 
 [node name="Units" type="Node2D" parent="."]
-
-[node name="Player" parent="Units" instance=ExtResource( 3 )]
-
-[node name="Enemy1" parent="Units" instance=ExtResource( 4 )]
-
-[node name="Enemy2" parent="Units" instance=ExtResource( 4 )]
 
 [node name="TurnManager" type="Node2D" parent="."]
 script = ExtResource( 8 )
