@@ -18,8 +18,10 @@ func init(tilemap: TileMap, grid_pos: Vector2, team_enum, allowed_attack_enums: 
 	self.team_enum = team_enum
 	self.grid_pos = grid_pos
 	self.allowed_attack_enums = allowed_attack_enums
-	self.stationary_attack_implementation = \
-		get_stationary_attack_implementation(allowed_attack_enums).new()
+	var sai = get_stationary_attack_implementation(allowed_attack_enums)
+	if sai != null:
+		sai.new()
+	self.stationary_attack_implementation = sai
 	
 	position = tilemap.map_to_world(grid_pos)
 	AUTO.pos_to_unit_map[grid_pos] = self
@@ -31,7 +33,7 @@ func get_stationary_attack_implementation(allowed_attack_enums):
 	for attack_enum in allowed_attack_enums:
 		if attack_enum in AUTO.attack_enum_to_class_map:
 			return AUTO.attack_enum_to_class_map[attack_enum]
-	return StationaryAttackInterface
+	return null
 
 # Return true if the movement is possible
 func move_with_bfs_to(end_grid_pos: Vector2) -> bool:

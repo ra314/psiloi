@@ -43,3 +43,8 @@ text = "Turn: 0"
 
 [node name="PowerupSelector" parent="." instance=ExtResource( 4 )]
 visible = false
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 480, 270 )
+current = true
+zoom = Vector2( 0.5, 0.5 )

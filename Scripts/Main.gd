@@ -134,7 +134,7 @@ func _input(event):
 	if event is InputEventMouseButton and event.is_action_released("click"):
 		if event.position < UI_LOCATION:
 			return
-		var grid_pos = $TileMap.world_to_map(event.position)
+		var grid_pos = $TileMap.world_to_map(event.position/2)
 		var curr_selected_unit = AUTO.pos_to_unit_map.get(grid_pos, null)
 		emit_signal("mouse_click", grid_pos, curr_selected_unit)
 

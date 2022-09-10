@@ -1,6 +1,6 @@
 class_name LevelGenerator
 
-const LEVEL_SIZE = Vector2(39,19)
+const LEVEL_SIZE = Vector2(20,10)
 const HIGHEST_INT_TILE_VALUE := 1
 
 static func init_noise() -> OpenSimplexNoise:
@@ -51,6 +51,7 @@ static func generate_level() -> Array:
 
 const ABLATION_FACTOR := 0.3
 static func generate_level_through_ablation() -> Array:
+	randomize()
 	var level = []
 	# Generation of a blank level full of land
 	for i in range(LEVEL_SIZE.x):
