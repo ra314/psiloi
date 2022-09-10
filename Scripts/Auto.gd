@@ -29,3 +29,6 @@ func get_other_team_enum(team_enum):
 func add_childv2(x, y):
 	x.add_child(y)
 	return y
+
+func random_int_vector(x_lim: int, y_lim: int):
+	return Vector2(randi()%x_lim, randi()%y_lim)

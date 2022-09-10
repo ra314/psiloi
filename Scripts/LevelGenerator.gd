@@ -7,9 +7,9 @@ static func init_noise() -> OpenSimplexNoise:
 	var noise = OpenSimplexNoise.new()
 	randomize()
 	noise.seed = randi()
-	noise.octaves = 4
-	noise.period = 2
-	noise.persistence = 0.8
+	noise.octaves = 6
+	noise.period = 15
+	noise.persistence = 0.5
 	return noise
 
 static func get_2d_noise_array(noise: OpenSimplexNoise, size: Vector2) -> Array:
@@ -49,8 +49,31 @@ static func generate_level() -> Array:
 	var normalized_level = normalize_level(two_d_noise_array)
 	return cast_and_round_level_to_ints(normalized_level)
 
-static func apply_random_level_to_tilemap(tilemap: TileMap) -> void:
-	var procedural_level = generate_level()
-	for i in range(len(procedural_level)):
-		for j in range(len(procedural_level[0])):
-			tilemap.set_cell(i, j, procedural_level[i][j])
+const ABLATION_FACTOR := 0.3
+static func generate_level_through_ablation() -> Array:
+	var level = []
+	# Generation of a blank level full of land
+	for i in range(LEVEL_SIZE.x):
+		level.append([])
+		for j in range(LEVEL_SIZE.y):
+			level[i].append(1)
+	# Ablation
+	var num_tiles_to_remove = int(ABLATION_FACTOR * (LEVEL_SIZE.x * LEVEL_SIZE.y))
+	var removed_tiles = HashSet.neww([])
+	while num_tiles_to_remove != 0:
+		var pos: Vector2
+		while true:
+			pos = AUTO.random_int_vector(LEVEL_SIZE.x, LEVEL_SIZE.y)
+			if pos in removed_tiles:
+				continue
+			else:
+				HashSet.add(removed_tiles, pos)
+				break
+		level[pos.x][pos.y] = 0
+		num_tiles_to_remove -= 1
+	return level
+
+static func apply_random_level_to_tilemap(level_array: Array, tilemap: TileMap) -> void:
+	for i in range(len(level_array)):
+		for j in range(len(level_array[0])):
+			tilemap.set_cell(i, j, level_array[i][j])

@@ -16,7 +16,7 @@ func _ready():
 	#create_valid_procedural_level()
 	#static_initialize_units()
 	
-	LevelGenerator.apply_random_level_to_tilemap($TileMap)
+	create_valid_dynamic_procedural_level()
 	yield(dynamic_initialize_units(), "completed")
 	
 	AUTO.players_set.keys()[0].can_move = true
@@ -62,8 +62,7 @@ func get_random_non_blocking_tile() -> Vector2:
 	var count = 0
 	var curr_pos = Vector2(-1,-1)
 	while $TileMap.get_cellv(curr_pos) in AUTO.BLOCKING_TILES:
-		curr_pos = Vector2(randi()%(int(LevelGenerator.LEVEL_SIZE.x)), \
-							randi()%(int(LevelGenerator.LEVEL_SIZE.y)))
+		curr_pos = AUTO.random_int_vector(LevelGenerator.LEVEL_SIZE.x, LevelGenerator.LEVEL_SIZE.y)
 		count += 1
 		assert(count < SEARCH_LIMIT)
 	return curr_pos
@@ -80,22 +79,54 @@ func static_initialize_units() -> void:
 	AUTO.all_units = [player, enemy1, enemy2]
 	LADDER.instance().position = $TileMap.map_to_world(EXIT_POS)
 
-func create_valid_procedural_level() -> void:
+const LEVEL_RETRY_LIMIT = 100
+
+func create_valid_dynamic_procedural_level() -> void:
 	var num_tries = 0
-	assert(LevelGenerator.LEVEL_SIZE.x > EXIT_POS.x)
-	assert(LevelGenerator.LEVEL_SIZE.y > EXIT_POS.y)
-	LevelGenerator.apply_random_level_to_tilemap($TileMap)
+	while(true):
+		var level_array = LevelGenerator.generate_level_through_ablation()
+		LevelGenerator.apply_random_level_to_tilemap(level_array, $TileMap)
+		if validate_level_has_no_islands($TileMap):
+			break
+		num_tries += 1
+		if num_tries > LEVEL_RETRY_LIMIT:
+			break
+		#assert(num_tries < LEVEL_RETRY_LIMIT)
+	print("num_tries to generate level:" + str(num_tries))
+
+func validate_level_has_no_islands(tilemap: CustomTileMap) -> bool:
+	var land_tiles_set = HashSet.neww([])
+	for x in range(LevelGenerator.LEVEL_SIZE.x):
+		for y in range(LevelGenerator.LEVEL_SIZE.y):
+			var pos = Vector2(x,y)
+			if !($TileMap.get_cellv(pos) in AUTO.BLOCKING_TILES):
+				HashSet.add(land_tiles_set, pos)
+	assert(len(land_tiles_set)!=0)
+	var bfs_explored_tiles_set = HashSet.neww([])
+	var curr_len_explored = 0
+	while curr_len_explored != len(bfs_explored_tiles_set):
+		for tile in bfs_explored_tiles_set:
+			for adjacent_tile in NAVIGATOR.get_surrounding_tiles(tile):
+				HashSet.add(bfs_explored_tiles_set, adjacent_tile)
+	var intersection = HashSet.intersection(land_tiles_set, bfs_explored_tiles_set)
+	return len(intersection) == len(land_tiles_set)
+
+func create_valid_static_procedural_level() -> void:
+	var num_tries = 0
+	var level_array = LevelGenerator.generate_level()
+	LevelGenerator.apply_random_level_to_tilemap(level_array, $TileMap)
 	var path = NAVIGATOR.bfs_path(ENTRY_POS, EXIT_POS, $TileMap)
 	while(path == []):
-		LevelGenerator.apply_random_level_to_tilemap($TileMap)
+		level_array = LevelGenerator.generate_level()
+		LevelGenerator.apply_random_level_to_tilemap(level_array, $TileMap)
 		path = NAVIGATOR.bfs_path(ENTRY_POS, EXIT_POS, $TileMap)
-		num_tries += 1
 		if $TileMap.get_cellv(ENEMY_SPAWN_POS1) in AUTO.BLOCKING_TILES:
 			path = []
 		if $TileMap.get_cellv(ENEMY_SPAWN_POS2) in AUTO.BLOCKING_TILES:
 			path = []
-	print("num_tries " + str(num_tries))
-	$TileMap.highlight_path(path)
+		num_tries += 1
+		assert(num_tries < LEVEL_RETRY_LIMIT)
+	print("num_tries to generate level:" + str(num_tries))
 
 const UI_LOCATION = Vector2(100,220)
 signal mouse_click(grid_pos, curr_selected_unit)
