@@ -24,21 +24,29 @@ func _ready():
 func dynamic_initialize_units() -> void:
 	var label = Label.new()
 	add_child(label)
+	
+	$PowerupSelector.visible = true
+	$PowerupSelector.init(AUTO.ATTACK.keys())
+	
 	label.text = "Click anywhere to place the Hero."
 	var grid_pos = yield(self, "mouse_click")[0]
 	var player = AUTO.add_childv2($Units, PLAYER.instance()).init($TileMap, grid_pos, \
-		AUTO.TEAM.PLAYER, HashSet.neww([AUTO.ATTACK.STAB, AUTO.ATTACK.ARCHER]))
+		AUTO.TEAM.PLAYER, HashSet.neww($PowerupSelector.get_selected_powerups()))
+	
 	label.text = "Click anywhere to place the enemies. Click on a blocking tile to finish."
 	grid_pos = yield(self, "mouse_click")[0]
 	var enemies = []
 	while !($TileMap.get_cellv(grid_pos) in AUTO.BLOCKING_TILES):
 		enemies.append(AUTO.add_childv2($Units, ENEMY.instance()).init($TileMap, grid_pos, \
-		AUTO.TEAM.ENEMY, HashSet.neww([AUTO.ATTACK.SLASH])))
+		AUTO.TEAM.ENEMY, HashSet.neww($PowerupSelector.get_selected_powerups())))
 		grid_pos = yield(self, "mouse_click")[0]
+	
 	AUTO.players_set = HashSet.neww([player])
 	AUTO.enemies_set = HashSet.neww(enemies)
 	AUTO.all_units = enemies + [player]
+	
 	label.queue_free()
+	$PowerupSelector.visible = false
 	$Exit.position = $TileMap.map_to_world(get_random_non_blocking_tile())
 
 func get_random_non_blocking_tile() -> Vector2:
@@ -81,9 +89,12 @@ func create_valid_procedural_level() -> void:
 	print("num_tries " + str(num_tries))
 	$TileMap.highlight_path(path)
 
+const UI_LOCATION = Vector2(100,220)
 signal mouse_click(grid_pos, curr_selected_unit)
 func _input(event):
 	if event is InputEventMouseButton and event.is_action_released("click"):
+		if event.position < UI_LOCATION:
+			return
 		var grid_pos = $TileMap.world_to_map(event.position)
 		var curr_selected_unit = AUTO.pos_to_unit_map.get(grid_pos, null)
 		emit_signal("mouse_click", grid_pos, curr_selected_unit)

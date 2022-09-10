@@ -60,6 +60,7 @@ func is_unit_on_other_team(unit):
 
 # Attacks if you move directly towards a unit and are now adjacent
 func check_and_perform_stab_attack(prev_grid_pos: Vector2) -> void:
+	print(AUTO.ATTACK.STAB)
 	if not (AUTO.ATTACK.STAB in allowed_attack_enums):
 		return
 	var target_grid_pos = NAVIGATOR.get_next_grid_pos_in_same_dir(prev_grid_pos, grid_pos)

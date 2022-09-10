@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Tilemap/Tileset_Hex.tres" type="TileSet" id=1]
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=2]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scenes/Level Components/Powerup Selector.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Scripts/TileMap.gd" type="Script" id=5]
 [ext_resource path="res://Tilemap/Tileset_UI.tres" type="TileSet" id=6]
 [ext_resource path="res://Assets/Object_Player_Exit.png" type="Texture" id=7]
@@ -46,3 +47,6 @@ margin_right = 488.0
 margin_bottom = 14.0
 rect_scale = Vector2( 4, 4 )
 text = "Turn: 0"
+
+[node name="PowerupSelector" parent="." instance=ExtResource( 4 )]
+visible = false
