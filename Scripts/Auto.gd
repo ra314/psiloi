@@ -32,3 +32,6 @@ func add_childv2(x, y):
 
 func random_int_vector(x_lim: int, y_lim: int):
 	return Vector2(randi()%x_lim, randi()%y_lim)
+
+
+var bombs = HashSet.neww([])

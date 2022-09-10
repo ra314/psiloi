@@ -25,6 +25,6 @@ func perform_attack(target_grid_pos: Vector2, tilemap: CustomTileMap, unit) -> b
 
 var BOMB = load("res://Scenes/Bomb.tscn")
 func add_bomb(target_grid_pos: Vector2, tilemap: CustomTileMap, unit):
-	var new_bomb = BOMB.instance()
-	unit.Main.add_child(new_bomb)
-	new_bomb.position = tilemap.map_to_world(target_grid_pos)
+	var new_bomb = BOMB.instance().init(unit.Main, target_grid_pos, tilemap)
+	unit.Main.get_node("Bombs").add_child(new_bomb)
+	HashSet.add(AUTO.bombs, new_bomb)

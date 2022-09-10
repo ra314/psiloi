@@ -31,6 +31,8 @@ script = ExtResource( 5 )
 
 [node name="Units" type="Node2D" parent="."]
 
+[node name="Bombs" type="Node2D" parent="."]
+
 [node name="TurnManager" type="Node2D" parent="."]
 script = ExtResource( 8 )
 

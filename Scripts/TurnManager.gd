@@ -20,6 +20,8 @@ func increment_ply_count(team_enum) -> void:
 	var opposing_team_enum = AUTO.get_other_team_enum(team_enum)
 	for unit in AUTO.get_units_by_team_enum(opposing_team_enum):
 		unit.can_move = true
+	for bomb in AUTO.bombs:
+		bomb.decrement_ply_countdown()
 	if _ply_count%2 == 0:
 		increment_turn_count()
 
