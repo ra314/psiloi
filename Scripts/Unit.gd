@@ -10,6 +10,12 @@ var timer: Timer
 var _allowed_attack_enums: Dictionary
 var _stationary_attack_implementation: StationaryAttackInterface
 func set_allowed_attack_enums(allowed_attack_enums: Dictionary):
+	if team_enum == AUTO.TEAM.ENEMY:
+		# Enemies can only have a single attack
+		assert(len(allowed_attack_enums)==1)
+		# Enemies can't slash
+		assert(!(AUTO.ATTACK.SLASH in allowed_attack_enums))
+	
 	_allowed_attack_enums = allowed_attack_enums
 	_stationary_attack_implementation = get_stationary_attack_implementation(_allowed_attack_enums)
 	init_sprite(_allowed_attack_enums)
@@ -83,8 +89,8 @@ func init_sprite(_allowed_attack_enums: Dictionary) -> void:
 # TODO: This doesn't work with multiple allowed stationary attacks
 func get_stationary_attack_implementation(_allowed_attack_enums):
 	for attack_enum in _allowed_attack_enums:
-		if attack_enum in AUTO.attack_enum_to_class_map:
-			return AUTO.attack_enum_to_class_map[attack_enum].new()
+		if attack_enum in AUTO.attack_enum_to_impl_map:
+			return AUTO.attack_enum_to_impl_map[attack_enum].new()
 	return null
 
 # Return true if the movement is possible
@@ -114,7 +120,6 @@ func is_unit_on_other_team(unit):
 
 # Attacks if you move directly towards a unit and are now adjacent
 func check_and_perform_stab_attack(prev_grid_pos: Vector2) -> void:
-	print(AUTO.ATTACK.STAB)
 	if not (AUTO.ATTACK.STAB in _allowed_attack_enums):
 		return
 	var target_grid_pos = NAVIGATOR.get_next_grid_pos_in_same_dir(prev_grid_pos, grid_pos)
