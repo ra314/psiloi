@@ -1,9 +1,11 @@
 extends GridContainer
 
-func init(powerups: Array):
+func init(powerups):
+	for child in get_children():
+		child.free()
 	for powerup in powerups:
 		var checkbox = CheckBox.new()
-		checkbox.text = powerup
+		checkbox.text = AUTO.ATTACK.keys()[powerup]
 		add_child(checkbox)
 
 func get_selected_powerups() -> Array:

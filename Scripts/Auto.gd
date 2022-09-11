@@ -9,6 +9,19 @@ var attack_enum_to_impl_map = {ATTACK.ARCHER: ArcherStationaryAttack, \
 								ATTACK.SHIELDBASH: ShieldBashStationaryAttack, \
 								ATTACK.WIZARD: WizardStationaryAttack, \
 								ATTACK.LANCE: LanceStationaryAttack}
+var player_attacks = HashSet.neww([ATTACK.STAB, ATTACK.SLASH, ATTACK.AXE, \
+							ATTACK.ARCHER, ATTACK.SHIELDBASH, ATTACK.LANCE])
+var enemy_attacks = HashSet.neww([ATTACK.STAB, ATTACK.ARCHER, \
+								ATTACK.BOMBER, ATTACK.WIZARD])
+func get_allowed_attacks(team_enum) -> Dictionary:
+	if team_enum == TEAM.PLAYER:
+		return player_attacks
+	elif team_enum == TEAM.ENEMY:
+		return enemy_attacks
+	else:
+		assert(false)
+	return {}
+
 
 var all_units: Array
 var enemies_set: Dictionary

@@ -16,6 +16,11 @@ func set_allowed_attack_enums(allowed_attack_enums: Dictionary):
 		# Enemies can't slash
 		assert(!(AUTO.ATTACK.SLASH in allowed_attack_enums))
 	
+	# Validate that non allowed attack enums aren't selected
+	var legal_attacks = AUTO.get_allowed_attacks(team_enum)
+	assert(len(allowed_attack_enums) == \
+		len(HashSet.intersection(allowed_attack_enums, legal_attacks)))
+	
 	_allowed_attack_enums = allowed_attack_enums
 	_stationary_attack_implementation = get_stationary_attack_implementation(_allowed_attack_enums)
 	init_sprite(_allowed_attack_enums)

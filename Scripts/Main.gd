@@ -25,9 +25,7 @@ func _ready():
 func dynamic_initialize_units() -> void:
 	var label = Label.new()
 	add_child(label)
-	
 	$PowerupSelector.visible = true
-	$PowerupSelector.init(AUTO.ATTACK.keys())
 	
 	var entry = LADDER.instance()
 	entry.position = $TileMap.map_to_world(get_random_non_blocking_tile())
@@ -38,11 +36,13 @@ func dynamic_initialize_units() -> void:
 	add_child(exit)
 	
 	label.text = "Click anywhere to place the Hero."
+	$PowerupSelector.init(AUTO.player_attacks)
 	var grid_pos = yield(self, "mouse_click")[0]
 	var player = AUTO.add_childv2($Units, PLAYER.instance()).init($TileMap, grid_pos, \
 		AUTO.TEAM.PLAYER, HashSet.neww($PowerupSelector.get_selected_powerups()))
 	
 	label.text = "Click anywhere to place the enemies. Click on a blocking tile to finish."
+	$PowerupSelector.init(AUTO.enemy_attacks)
 	grid_pos = yield(self, "mouse_click")[0]
 	var enemies = []
 	while !($TileMap.get_cellv(grid_pos) in AUTO.BLOCKING_TILES):
