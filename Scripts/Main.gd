@@ -20,6 +20,7 @@ func _ready():
 	yield(dynamic_initialize_units(), "completed")
 	
 	AUTO.players_set.keys()[0].can_move = true
+	$PowerupSelector.init(AUTO.player_attacks)
 	connect("mouse_click", self, "process_input")
 
 func dynamic_initialize_units() -> void:
